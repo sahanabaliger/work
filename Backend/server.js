@@ -34,10 +34,6 @@ const noteSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
-    },
-    pinned: {
-        type: Boolean,
-        default: false
     }
 }, { timestamps: true });
 
@@ -62,7 +58,7 @@ app.post("/api/notes", async (req, res) => {
     try {
         const { title, content } = req.body;
 
-        if (!title || !title.trim() || !content || !content.trim()) {
+        if (!title || !content) {
             return res.status(400).json({ message: "Title and Content are required" });
         }
 
@@ -72,7 +68,6 @@ app.post("/api/notes", async (req, res) => {
         });
 
         res.status(201).json(newNote);
-
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }
@@ -81,7 +76,7 @@ app.post("/api/notes", async (req, res) => {
 // UPDATE
 app.put("/api/notes/:id", async (req, res) => {
     try {
-        const { title, content, pinned } = req.body;
+        const { title, content } = req.body;
 
         const note = await Note.findById(req.params.id);
         if (!note) {
@@ -90,7 +85,6 @@ app.put("/api/notes/:id", async (req, res) => {
 
         if (title !== undefined) note.title = title.trim();
         if (content !== undefined) note.content = content.trim();
-        if (pinned !== undefined) note.pinned = pinned;
 
         await note.save();
         res.json(note);
@@ -116,8 +110,6 @@ app.delete("/api/notes/:id", async (req, res) => {
     }
 });
 
-// ------------------
-// SERVER START
 // ------------------
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);

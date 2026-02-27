@@ -44,18 +44,6 @@ function App() {
         }
     };
 
-    const togglePin = async (note) => {
-        try {
-            const updated = await updateNote(note._id, {
-                pinned: !note.pinned
-            });
-
-            setNotes(notes.map(n => n._id === updated._id ? updated : n));
-        } catch (err) {
-            setError(err.message);
-        }
-    };
-
     const deleteNote = async (id) => {
         try {
             await deleteNoteApi(id);
@@ -74,7 +62,7 @@ function App() {
 
             <div className="input-group">
                 <input
-                    placeholder="Note Title"
+                    placeholder="Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
@@ -88,23 +76,18 @@ function App() {
                 <button onClick={addNote}>Add Note</button>
             </div>
 
-            <div className="notes-grid">
+            <ul>
                 {notes.map((note) => (
-                    <div key={note._id} className={`note-card ${note.pinned ? "pinned" : ""}`}>
+                    <li key={note._id}>
                         <h3>{note.title}</h3>
                         <p>{note.content}</p>
 
-                        <div className="actions">
-                            <button onClick={() => togglePin(note)}>
-                                {note.pinned ? "Unpin" : "Pin"}
-                            </button>
-                            <button onClick={() => deleteNote(note._id)}>
-                                Delete
-                            </button>
-                        </div>
-                    </div>
+                        <button onClick={() => deleteNote(note._id)}>
+                            Delete
+                        </button>
+                    </li>
                 ))}
-            </div>
+            </ul>
         </div>
     );
 }
