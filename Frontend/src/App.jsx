@@ -53,6 +53,17 @@ function App() {
         }
     };
 
+    // ----------------------
+    // PIN NOTE FUNCTION
+    // ----------------------
+    const pinNote = (id) => {
+        setNotes(prevNotes => {
+            const noteToPin = prevNotes.find(n => n._id === id);
+            const otherNotes = prevNotes.filter(n => n._id !== id);
+            return [noteToPin, ...otherNotes];
+        });
+    };
+
     if (loading) return <h2>Loading...</h2>;
     if (error) return <h2>Error: {error}</h2>;
 
@@ -66,25 +77,30 @@ function App() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
-
                 <textarea
                     placeholder="Write your note..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 />
-
                 <button onClick={addNote}>Add Note</button>
             </div>
 
             <ul>
                 {notes.map((note) => (
                     <li key={note._id}>
-                        <h3>{note.title}</h3>
-                        <p>{note.content}</p>
+                        <div>
+                            <h3>{note.title}</h3>
+                            <p>{note.content}</p>
+                        </div>
 
-                        <button onClick={() => deleteNote(note._id)}>
-                            Delete
-                        </button>
+                        <div className="btn-group">
+                            <button className="pin-btn" onClick={() => pinNote(note._id)}>
+                                📌
+                            </button>
+                            <button className="delete-btn" onClick={() => deleteNote(note._id)}>
+                                Delete
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul>
